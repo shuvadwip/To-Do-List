@@ -1,0 +1,83 @@
+import tkinter as tk
+import random
+
+class TodoApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title('To-Do List')
+        self.root.geometry('400x300')  # Adjusted window size
+        self.root.configure(bg='lightyellow')
+
+        self.tasks = []
+
+        self.title = tk.Label(root, text="To-Do List", bg='lightyellow', font=('Helvetica', 16))
+        self.title.grid(row=0, column=0, columnspan=2, pady=10)
+
+        self.display = tk.Label(root, text="", bg='white')
+        self.display.grid(row=0, column=2, columnspan=2)
+
+        self.txt_input = tk.Entry(root, width=20, font=('Helvetica', 12))
+        self.txt_input.grid(row=1, column=2, columnspan=2, pady=10)
+
+        self.btn_add_task = tk.Button(root, text="Add Task", command=self.add_task)
+        self.btn_add_task.grid(row=1, column=0, pady=10)
+
+        self.btn_delete = tk.Button(root, text="Delete", command=self.delete_task)
+        self.btn_delete.grid(row=2, column=0, pady=5)
+
+        self.btn_delete_all = tk.Button(root, text="Delete All", command=self.delete_all)
+        self.btn_delete_all.grid(row=3, column=0, pady=5)
+
+        self.btn_choose_random = tk.Button(root, text="Choose Random", command=self.choose_random)
+        self.btn_choose_random.grid(row=4, column=0, pady=5)
+
+        self.btn_number_of_task = tk.Button(root, text="Number of Tasks", command=self.number_of_tasks)
+        self.btn_number_of_task.grid(row=5, column=0, pady=5)
+
+        self.btn_close = tk.Button(root, text="Exit", command=root.destroy)
+        self.btn_close.grid(row=6, column=0, pady=5)
+
+        self.lb_tasks = tk.Listbox(root, font=('Helvetica', 12))
+        self.lb_tasks.grid(row=2, column=2, rowspan=5, columnspan=2, pady=10)
+
+    def update_listbox(self):
+        self.lb_tasks.delete(0, "end")
+        for task in self.tasks:
+            self.lb_tasks.insert("end", task)
+
+    def add_task(self):
+        task = self.txt_input.get()
+        if task:
+            self.tasks.append(task)
+            self.update_listbox()
+            self.txt_input.delete(0, 'end')
+        else:
+            self.display['text'] = "Please enter a task!"
+
+    def delete_task(self):
+        selected_task = self.lb_tasks.get('active')
+        if selected_task in self.tasks:
+            self.tasks.remove(selected_task)
+            self.update_listbox()
+            self.display['text'] = "Task deleted!"
+
+    def delete_all(self):
+        self.tasks = []
+        self.update_listbox()
+
+    def choose_random(self):
+        if self.tasks:
+            random_task = random.choice(self.tasks)
+            self.display['text'] = random_task
+        else:
+            self.display['text'] = "No tasks available."
+
+    def number_of_tasks(self):
+        num_tasks = len(self.tasks)
+        self.display['text'] = f"Number of tasks: {num_tasks}"
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = TodoApp(root)
+    root.mainloop()
